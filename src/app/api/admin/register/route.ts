@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { adminDb } from '@/database/firebase-admin';
 
 export async function POST(request: Request) {
+  if (!adminDb) {
+    return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+  }
+
   try {
     const { email, password, storeName } = await request.json();
 

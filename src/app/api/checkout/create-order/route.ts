@@ -3,6 +3,10 @@ import { adminDb } from '@/database/firebase-admin';
 
 export async function POST(request: Request) {
   try {
+    if (!adminDb) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
+    }
+
     const { tenantId, productId, quantity } = await request.json();
 
     if (!tenantId || !productId) {
@@ -16,7 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Store not found' }, { status: 404 });
     }
 
-    const store = storeSnap.data();
+    const store = storeSnap.data()!;
 
     if (store.membership_status === 'BLOCKED') {
       return NextResponse.json({ error: 'Store suspended' }, { status: 403 });

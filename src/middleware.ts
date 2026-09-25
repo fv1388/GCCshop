@@ -5,8 +5,12 @@ export function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
   const url = request.nextUrl;
 
-  // 主商城绝对纯净，直接放行
-  if (hostname === 'www.get100shop.com' || hostname === 'get100shop.com') {
+  // 主商城绝对纯净，直接放行（含 vccshop.vercel.app 等 Vercel 预览域名）
+  if (
+    hostname === 'www.get100shop.com' ||
+    hostname === 'get100shop.com' ||
+    hostname.endsWith('.vercel.app')
+  ) {
     return NextResponse.next();
   }
 
@@ -26,12 +30,21 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(new URL('/tools/starlink' + url.pathname, request.url));
   }
 
-  // 商家独立商城子域名
-  const subdomainMatch = hostname.match(/^([a-z0-9-]+)\.cc\.get100shop\.com$/i);
-  if (subdomainMatch) {
-    const tenantId = subdomainMatch[1];
+  // 商家独立商城子域名（排除 www）
+  if (!hostname.startsWith('www.')) {
+    const subdomainMatch = hostname.match(/^([a-z0-9-]+)\.cc\.get100shop\.com$/i);
+    if (subdomainMatch) {
+      const tenantId = subdomainMatch[1];
+      return NextResponse.rewrite(
+        new URL(`/shop/_tenant/${tenantId}${url.pathname}`, request.url)
+      );
+    }
+  }
+
+  // 商家自定义绑定域名（如 merchant.com）→ 走 KV 查询标识
+  if (hostname.includes('.') && !hostname.endsWith('.get100shop.com')) {
     return NextResponse.rewrite(
-      new URL(`/shop/_tenant/${tenantId}${url.pathname}`, request.url)
+      new URL(`/shop/_tenant/custom:${hostname}${url.pathname}`, request.url)
     );
   }
 

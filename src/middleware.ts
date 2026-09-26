@@ -36,7 +36,7 @@ export function middleware(request: NextRequest) {
     if (subdomainMatch) {
       const tenantId = subdomainMatch[1];
       return NextResponse.rewrite(
-        new URL(`/shop/_tenant/${tenantId}${url.pathname}`, request.url)
+        new URL(`/shop/tenant/${tenantId}${url.pathname}`, request.url)
       );
     }
   }
@@ -44,7 +44,7 @@ export function middleware(request: NextRequest) {
   // 商家自定义绑定域名（如 merchant.com）→ 走 KV 查询标识
   if (hostname.includes('.') && !hostname.endsWith('.get100shop.com')) {
     return NextResponse.rewrite(
-      new URL(`/shop/_tenant/custom:${hostname}${url.pathname}`, request.url)
+      new URL(`/shop/tenant/custom:${hostname}${url.pathname}`, request.url)
     );
   }
 

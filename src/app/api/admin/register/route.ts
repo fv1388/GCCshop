@@ -78,7 +78,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       tenantId: tenantId,
-      storeUrl: `https://${subdomain}.cc.get100shop.com`,
+      storeUrl: `https://cc.get100shop.com/shop/tenant/${subdomain}`,
     });
 
   } catch (error: any) {

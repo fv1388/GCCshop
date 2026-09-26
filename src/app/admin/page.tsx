@@ -186,7 +186,7 @@ function AdminDashboardInner() {
               {isFreeTrial ? 'Free Trial' : 'Pro'}
             </span>
             <a
-              href={`https://${store?.subdomain}.cc.get100shop.com`}
+              href={`https://cc.get100shop.com/shop/tenant/${store?.subdomain}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-[12px] font-bold text-zinc-300 hover:text-white transition"

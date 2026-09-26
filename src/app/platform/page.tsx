@@ -7,7 +7,7 @@ export default function PlatformPage() {
   const [password, setPassword] = useState('');
   const [storeName, setStoreName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ success: boolean; message: string; storeUrl?: string } | null>(null);
+  const [result, setResult] = useState<{ success: boolean; message: string; storeUrl?: string; tenantId?: string } | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,6 +25,7 @@ export default function PlatformPage() {
           success: true,
           message: 'Your store is ready!',
           storeUrl: data.storeUrl,
+          tenantId: data.tenantId,
         });
       } else {
         setResult({ success: false, message: data.error || 'Registration failed' });
@@ -162,6 +163,22 @@ export default function PlatformPage() {
                         <p className="mt-2 text-xs opacity-80">
                           Save this URL — it is your storefront address.
                         </p>
+                        <div className="mt-4 flex flex-col sm:flex-row gap-2.5">
+                          <a
+                            href={`/admin?tenantId=${result.tenantId}`}
+                            className="flex-1 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black text-[13px] font-black text-center px-4 py-3 rounded-xl transition active:scale-[0.99]"
+                          >
+                            Open Admin Dashboard →
+                          </a>
+                          <a
+                            href={result.storeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-100 text-[13px] font-black text-center px-4 py-3 rounded-xl transition active:scale-[0.99]"
+                          >
+                            Open My Store ↗
+                          </a>
+                        </div>
                       </>
                     ) : (
                       <p>{result.message}</p>

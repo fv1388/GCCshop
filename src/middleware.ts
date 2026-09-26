@@ -16,7 +16,16 @@ export function middleware(request: NextRequest) {
 
   // 官方招商会员中心
   if (hostname === 'platform.cc.get100shop.com' || hostname === 'cc.get100shop.com') {
-    const target = url.pathname.startsWith('/platform') ? url.pathname : '/platform' + url.pathname;
+    // 商户后台、店铺前台等真实路径直接放行，其余（含 /）重写到招商页
+    if (
+      url.pathname.startsWith('/admin') ||
+      url.pathname.startsWith('/shop') ||
+      url.pathname.startsWith('/tools') ||
+      url.pathname.startsWith('/platform')
+    ) {
+      return NextResponse.next();
+    }
+    const target = '/platform' + url.pathname;
     return NextResponse.rewrite(new URL(target, request.url));
   }
 
